@@ -1,0 +1,1 @@
+CREATE POLICY "Authenticated users can view tutor role rows" ON public.user_roles FOR SELECT TO authenticated USING (role = 'tutor'::public.app_role);
