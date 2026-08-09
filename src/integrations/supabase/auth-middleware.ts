@@ -30,13 +30,28 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
   };
 }
 
+function getValidSupabaseUrl(urlRaw?: string): string {
+  if (!urlRaw || urlRaw === "undefined" || urlRaw === "null") return "https://hgrcchywiiifkfjanbde.supabase.co";
+  const cleaned = urlRaw.replace(/^"|"$/g, '').trim();
+  if (cleaned.startsWith("http://") || cleaned.startsWith("https://")) {
+    return cleaned;
+  }
+  return "https://hgrcchywiiifkfjanbde.supabase.co";
+}
+
+function getValidSupabaseKey(keyRaw?: string): string {
+  if (!keyRaw || keyRaw === "undefined" || keyRaw === "null") return "sb_publishable_EewaWyFGH0BaiozWD6mp8w_fLbmZVp_";
+  const cleaned = keyRaw.replace(/^"|"$/g, '').trim();
+  return cleaned || "sb_publishable_EewaWyFGH0BaiozWD6mp8w_fLbmZVp_";
+}
+
 export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server(
   async ({ next }) => {
     const envUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
     const envKey = process.env.SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-    const SUPABASE_URL = (envUrl || "https://hgrcchywiiifkfjanbde.supabase.co").replace(/^"|"$/g, '').trim();
-    const SUPABASE_PUBLISHABLE_KEY = (envKey || "sb_publishable_EewaWyFGH0BaiozWD6mp8w_fLbmZVp_").replace(/^"|"$/g, '').trim();
+    const SUPABASE_URL = getValidSupabaseUrl(envUrl);
+    const SUPABASE_PUBLISHABLE_KEY = getValidSupabaseKey(envKey);
     
     const request = getRequest();
 
