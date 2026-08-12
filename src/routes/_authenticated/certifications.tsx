@@ -274,8 +274,8 @@ export function Certifications() {
                 )}
 
                 {/* Badges & Duration */}
-                <div className="mt-5 flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-2">
+                <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t pt-4 text-xs text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-2">
                     <Badge
                       variant="outline"
                       className={
@@ -293,25 +293,32 @@ export function Certifications() {
                       {c.duration}
                     </span>
                   </div>
-                  <span className="inline-flex items-center gap-1 font-medium text-primary">
-                    <Sparkles className="h-3 w-3" /> {matchScore}% Match
+                  <span className="inline-flex items-center gap-1 font-semibold text-primary">
+                    <Sparkles className="h-3.5 w-3.5" /> {matchScore}% Match
                   </span>
                 </div>
 
                 {/* Action buttons */}
-                <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                  <Button asChild variant="default" size="sm" className="flex-1 rounded-xl justify-center">
+                <div className="mt-5 flex items-center gap-2.5">
+                  <Button asChild variant="default" className="flex-1 h-11 sm:h-10 rounded-xl text-sm font-semibold shadow-sm justify-center">
                     <a href={c.url} target="_blank" rel="noopener noreferrer">
-                      Official Page <ExternalLink className="h-3.5 w-3.5 ml-1.5" />
+                      Official Page <ExternalLink className="h-4 w-4 ml-2" />
                     </a>
                   </Button>
                   <Button
                     variant={isSaved ? "secondary" : "outline"}
-                    size="sm"
                     onClick={() => toggleSave(c.name)}
-                    className="rounded-xl px-3 justify-center"
+                    className="h-11 sm:h-10 rounded-xl px-4 text-sm font-medium shrink-0 justify-center"
                   >
-                    {isSaved ? "Saved" : "Save"}
+                    {isSaved ? (
+                      <span className="flex items-center gap-1.5 text-primary">
+                        <BookmarkCheck className="h-4 w-4 fill-primary/20" /> Saved
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5">
+                        <Bookmark className="h-4 w-4" /> Save
+                      </span>
+                    )}
                   </Button>
                 </div>
               </div>
