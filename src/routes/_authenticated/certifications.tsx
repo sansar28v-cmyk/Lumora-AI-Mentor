@@ -229,13 +229,13 @@ export function Certifications() {
                       <Award className="h-5 w-5" />
                     </span>
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs uppercase tracking-wide font-semibold text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+                        <span className="text-xs uppercase tracking-wide font-semibold text-muted-foreground truncate">
                           {c.provider}
                         </span>
                         {c.featured && (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-primary/10 text-primary border-none">
-                            Top Recommendation
+                          <Badge variant="secondary" className="text-[10px] px-2 py-0.5 bg-primary/10 text-primary border-none whitespace-nowrap shrink-0 font-medium inline-flex items-center">
+                            <Sparkles className="h-3 w-3 mr-1 shrink-0" /> Top Pick
                           </Badge>
                         )}
                       </div>
