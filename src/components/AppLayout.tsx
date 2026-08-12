@@ -81,7 +81,7 @@ export function AppLayout({ children, title }: { children: ReactNode; title?: st
   const activeItem = nav.find((n) => n.to === pathname);
 
   return (
-    <div className="min-h-screen flex w-full text-foreground">
+    <div className="min-h-screen flex w-full max-w-full overflow-x-hidden text-foreground">
       {/* Sidebar */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-64 flex-col bg-sidebar border-r border-sidebar-border z-30">
         <Link to="/dashboard" className="px-6 py-6 flex items-center gap-2.5">
@@ -142,10 +142,10 @@ export function AppLayout({ children, title }: { children: ReactNode; title?: st
       </aside>
 
       {/* Main */}
-      <div className="flex-1 md:ml-64 flex flex-col min-w-0">
+      <div className="flex-1 md:ml-64 flex flex-col min-w-0 max-w-full overflow-x-hidden">
         {/* Topbar */}
-        <header className="sticky top-0 z-20 backdrop-blur-xl bg-background/70 border-b border-border">
-          <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 md:px-8 h-16">
+        <header className="sticky top-0 z-20 backdrop-blur-xl bg-background/70 border-b border-border w-full">
+          <div className="flex items-center justify-between gap-2 sm:gap-3 px-4 md:px-8 h-16 max-w-full">
             {/* Mobile brand */}
             <Link to="/dashboard" className="flex md:hidden items-center gap-2 shrink-0">
               <LogoMark className="h-7 w-7" />
@@ -173,7 +173,7 @@ export function AppLayout({ children, title }: { children: ReactNode; title?: st
               </button>
             </div>
 
-            <div className="ml-auto flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {/* Mobile search icon */}
               <button
                 onClick={() => setPaletteOpen(true)}

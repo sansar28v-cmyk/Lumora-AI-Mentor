@@ -170,9 +170,9 @@ export function Certifications() {
         </div>
 
         {/* Level & Provider Filter Pills */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground mr-1 flex items-center gap-1">
+        <div className="flex flex-col gap-3 pt-1 max-w-full overflow-hidden">
+          <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+            <span className="text-xs font-medium text-muted-foreground mr-1 flex items-center gap-1 shrink-0">
               <Filter className="h-3.5 w-3.5" /> Level:
             </span>
             {levels.map((l) => (
@@ -180,7 +180,7 @@ export function Certifications() {
                 key={l}
                 size="sm"
                 variant={level === l ? "default" : "ghost"}
-                className="rounded-xl text-xs h-8 px-3"
+                className="rounded-xl text-xs h-8 px-2.5"
                 onClick={() => setLevel(l)}
               >
                 {l}
@@ -188,14 +188,14 @@ export function Certifications() {
             ))}
           </div>
 
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground mr-1">Issuer:</span>
+          <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+            <span className="text-xs font-medium text-muted-foreground mr-1 shrink-0">Issuer:</span>
             {providers.slice(0, 5).map((p) => (
               <Button
                 key={p}
                 size="sm"
                 variant={provider === p ? "secondary" : "outline"}
-                className="rounded-xl text-xs h-8 px-3"
+                className="rounded-xl text-xs h-8 px-2.5"
                 onClick={() => setProvider(p)}
               >
                 {p}
@@ -212,7 +212,7 @@ export function Certifications() {
           description="Try broadening your search term or resetting your level & provider filters."
         />
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3 max-w-full">
           {filtered.map((c) => {
             const isSaved = savedCerts.includes(c.name);
             const matchScore = c.matchScore ?? 90;
@@ -220,7 +220,7 @@ export function Certifications() {
             return (
               <div
                 key={c.name}
-                className="group relative flex flex-col rounded-2xl border bg-card p-6 transition-all duration-200 hover:border-primary/40 hover:shadow-lg"
+                className="group relative flex flex-col rounded-2xl border bg-card p-4 sm:p-6 transition-all duration-200 hover:border-primary/40 hover:shadow-lg max-w-full overflow-hidden"
               >
                 {/* Header row */}
                 <div className="flex items-start justify-between gap-3">
