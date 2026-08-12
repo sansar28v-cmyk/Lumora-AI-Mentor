@@ -12,7 +12,7 @@ import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { ThemeProvider, useTheme } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
@@ -141,6 +141,5 @@ function RootComponent() {
 }
 
 function ToasterWithTheme() {
-  const { theme } = useTheme();
-  return <Toaster theme={theme} richColors position="top-right" />;
+  return <Toaster theme="light" richColors position="top-right" />;
 }

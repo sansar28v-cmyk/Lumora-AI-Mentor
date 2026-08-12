@@ -1,15 +1,13 @@
 import { LogoMark } from "@/components/Logo";
-import { Footer } from "@/components/Footer";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Map, Award, ClipboardCheck, FolderKanban, Users, UserCircle,
-  Sparkles, Bell, Search, Command, Sun, Moon, LogOut, Settings, ChevronRight,
+  Sparkles, Bell, Search, Command, LogOut, Settings, ChevronRight,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useState, useRef } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useTheme } from "@/components/theme-provider";
 import { useOnboarding } from "@/lib/use-onboarding";
 
 
@@ -26,7 +24,6 @@ const nav = [
 export function AppLayout({ children, title }: { children: ReactNode; title?: string }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
-  const { theme, toggle } = useTheme();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -186,14 +183,6 @@ export function AppLayout({ children, title }: { children: ReactNode; title?: st
                 <Search className="h-4 w-4" />
               </button>
 
-              <button
-                onClick={toggle}
-                aria-label="Toggle theme"
-                className="h-9 w-9 md:h-10 md:w-10 grid place-items-center rounded-xl bg-muted/70 hover:bg-muted transition"
-              >
-                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </button>
-
               <div ref={notifRef} className="relative">
                 <button
                   onClick={() => setNotifOpen((v) => !v)}
@@ -204,7 +193,7 @@ export function AppLayout({ children, title }: { children: ReactNode; title?: st
                   <span className="absolute top-2 right-2 h-2 w-2 rounded-full gradient-primary" />
                 </button>
                 {notifOpen && (
-                  <div className="absolute -right-11 sm:right-0 mt-2 w-[min(20rem,calc(100vw-1.5rem))] glass-strong rounded-2xl p-2 shadow-xl animate-in-up z-50">
+                  <div className="absolute -right-11 sm:right-0 mt-2 w-[min(20rem,calc(100vw-1.5rem))] bg-card border border-border rounded-2xl p-2 shadow-2xl animate-in-up z-50">
                     <div className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Notifications</div>
                     {[
                       { t: "New AI Roadmap step unlocked", s: "React advanced patterns", ago: "2m" },
@@ -229,7 +218,7 @@ export function AppLayout({ children, title }: { children: ReactNode; title?: st
                   {initials}
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 mt-2 w-[min(16rem,calc(100vw-1.5rem))] glass-strong rounded-2xl p-2 shadow-xl animate-in-up z-50">
+                  <div className="absolute right-0 mt-2 w-[min(16rem,calc(100vw-1.5rem))] bg-card border border-border rounded-2xl p-2 shadow-2xl animate-in-up z-50">
                     <div className="px-3 py-2">
                       <div className="text-sm font-semibold truncate">{displayName}</div>
                       <div className="text-xs text-muted-foreground truncate">{email}</div>
@@ -237,7 +226,6 @@ export function AppLayout({ children, title }: { children: ReactNode; title?: st
                     <div className="h-px bg-border my-1" />
                     <MenuItem icon={UserCircle} label="Profile" onClick={() => { setMenuOpen(false); navigate({ to: "/profile" }); }} />
                     <MenuItem icon={Settings} label="Settings" onClick={() => { setMenuOpen(false); toast("Settings coming soon"); }} />
-                    <MenuItem icon={theme === "dark" ? Sun : Moon} label={theme === "dark" ? "Light mode" : "Dark mode"} onClick={toggle} />
                     <div className="h-px bg-border my-1" />
                     <MenuItem icon={LogOut} label="Sign out" onClick={signOut} destructive />
                   </div>
@@ -254,7 +242,6 @@ export function AppLayout({ children, title }: { children: ReactNode; title?: st
 
         <main className="flex-1 px-4 md:px-8 py-6 md:py-8 pb-24 md:pb-8 min-w-0">
           {children}
-          <Footer compact />
         </main>
 
         {/* Mobile bottom nav */}
@@ -284,7 +271,7 @@ export function AppLayout({ children, title }: { children: ReactNode; title?: st
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-start pt-24 px-4" onClick={() => setPaletteOpen(false)}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-xl glass-strong rounded-2xl overflow-hidden shadow-2xl animate-in-up"
+            className="w-full max-w-xl bg-card border border-border rounded-2xl overflow-hidden shadow-2xl animate-in-up"
           >
             <div className="flex items-center gap-2 px-4 h-12 border-b border-border">
               <Search className="h-4 w-4 text-muted-foreground" />

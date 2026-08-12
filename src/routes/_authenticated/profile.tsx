@@ -14,6 +14,9 @@ import { PageIntro, PageLoader } from "@/components/page-states";
 import { useOnboarding } from "@/lib/use-onboarding";
 import { updateProfile } from "@/lib/app.functions";
 import { domainById, LEARNING_GOALS } from "@/lib/domains";
+import { getFormattedAnalysis } from "@/lib/onboarding-types";
+import { getRecommendedCertifications } from "@/lib/domain-certifications";
+import { ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
@@ -57,6 +60,7 @@ function Profile() {
   const domain = domainById(profile?.career_domain);
   const goal = LEARNING_GOALS.find((g) => g.id === profile?.learning_goal)?.label ?? profile?.learning_goal ?? "—";
   const readiness = profile?.readiness_score ?? result?.percentage ?? 0;
+  const analysis = getFormattedAnalysis(result?.analysis);
   const initials = (profile?.full_name ?? "You").split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 
   return (
@@ -106,18 +110,21 @@ function Profile() {
           <div className="rounded-2xl border bg-card p-6">
             <h3 className="font-semibold">Assessed strengths</h3>
             <div className="mt-4 flex flex-wrap gap-2">
-              {(result?.analysis?.strengths ?? []).map((s) => (
+              {analysis.strengths.map((s) => (
                 <span key={s} className="rounded-lg border bg-muted/40 px-3 py-1.5 text-sm">{s}</span>
               ))}
-              {(result?.analysis?.strengths ?? []).length === 0 && (
+              {analysis.strengths.length === 0 && (
                 <p className="text-sm text-muted-foreground">Complete your assessment to see verified strengths.</p>
               )}
             </div>
             <h3 className="mt-6 font-semibold">Focus areas</h3>
             <div className="mt-4 flex flex-wrap gap-2">
-              {(result?.analysis?.weakAreas ?? []).map((s) => (
+              {analysis.weakAreas.map((s) => (
                 <span key={s} className="rounded-lg border bg-muted/40 px-3 py-1.5 text-sm">{s}</span>
               ))}
+              {analysis.weakAreas.length === 0 && (
+                <p className="text-sm text-muted-foreground">No focus areas identified yet.</p>
+              )}
             </div>
           </div>
         </div>
@@ -134,17 +141,24 @@ function Profile() {
 
           <div className="rounded-2xl border bg-card p-6">
             <h3 className="mb-4 font-semibold">Recommended certifications</h3>
-            <ul className="space-y-3 text-sm">
-              {(result?.certifications ?? []).map((c) => (
-                <li key={c.name}>
-                  <a href={c.url} target="_blank" rel="noopener noreferrer" className="font-medium hover:underline">{c.name}</a>
-                  <div className="text-xs text-muted-foreground">{c.provider} · {c.duration}</div>
-                </li>
+            <div className="space-y-3 text-sm">
+              {((result?.certifications?.length ? result.certifications : getRecommendedCertifications(profile?.career_domain))).slice(0, 3).map((c) => (
+                <div key={c.name} className="flex items-center justify-between gap-3 rounded-xl border p-3 hover:border-primary/40 transition">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[10px] font-semibold uppercase text-muted-foreground">{c.provider}</div>
+                    <a href={c.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-xs sm:text-sm hover:underline hover:text-primary transition truncate block">
+                      {c.name}
+                    </a>
+                    <div className="text-xs text-muted-foreground mt-0.5">{c.duration}</div>
+                  </div>
+                  <Button asChild size="sm" variant="ghost" className="h-8 w-8 p-0 rounded-lg shrink-0">
+                    <a href={c.url} target="_blank" rel="noopener noreferrer" title="View Official Page">
+                      <ExternalLink className="h-4 w-4 text-primary" />
+                    </a>
+                  </Button>
+                </div>
               ))}
-              {(result?.certifications ?? []).length === 0 && (
-                <li className="text-muted-foreground">No recommendations yet.</li>
-              )}
-            </ul>
+            </div>
           </div>
         </div>
       </div>

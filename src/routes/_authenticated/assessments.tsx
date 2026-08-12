@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AlertTriangle, CheckCircle2, TrendingUp, XCircle } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { AppLayout } from "@/components/AppLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { EmptyState, PageIntro, PageLoader } from "@/components/page-states";
 import { useOnboarding } from "@/lib/use-onboarding";
 import { domainById } from "@/lib/domains";
+import { getFormattedAnalysis } from "@/lib/onboarding-types";
 
 export const Route = createFileRoute("/_authenticated/assessments")({
   head: () => ({
@@ -43,6 +44,7 @@ function Assessments() {
 
   const domain = domainById(profile?.career_domain);
   const topics = result.analysis?.topicScores ?? [];
+  const analysis = getFormattedAnalysis(result.analysis);
   const questions = result.questions ?? [];
   const answers = result.answers ?? {};
   const shown = questions.filter((q) => filter === "all" || answers[String(q.id)] !== q.correctIndex);
@@ -91,7 +93,6 @@ function Assessments() {
                   interval={0}
                   tick={{ fontSize: 10 }}
                 />
-                <Tooltip />
                 <Bar dataKey="score" fill="var(--primary)" radius={[0, 6, 6, 0]} barSize={14} />
               </BarChart>
             </ResponsiveContainer>
@@ -104,7 +105,6 @@ function Assessments() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="topic" tick={{ fontSize: 11 }} interval={0} angle={-25} textAnchor="end" height={60} />
                 <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
-                <Tooltip />
                 <Bar dataKey="score" fill="var(--primary)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -119,12 +119,12 @@ function Assessments() {
             <TrendingUp className="h-4 w-4 text-primary" /> Strengths
           </h2>
           <ul className="space-y-2 text-sm">
-            {(result.analysis?.strengths ?? []).map((s) => (
+            {analysis.strengths.map((s) => (
               <li key={s} className="flex gap-2">
                 <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /> {s}
               </li>
             ))}
-            {(result.analysis?.strengths ?? []).length === 0 && (
+            {analysis.strengths.length === 0 && (
               <li className="text-muted-foreground">No strengths detected yet.</li>
             )}
           </ul>
@@ -134,7 +134,7 @@ function Assessments() {
             <AlertTriangle className="h-4 w-4 text-primary" /> Weak topics & next actions
           </h2>
           <ul className="space-y-2 text-sm">
-            {(result.analysis?.weakAreas ?? []).map((w) => (
+            {analysis.weakAreas.map((w) => (
               <li key={w} className="flex gap-2">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" /> {w}
               </li>

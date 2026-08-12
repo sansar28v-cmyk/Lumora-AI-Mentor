@@ -188,9 +188,9 @@
   box-shadow: var(--shadow-card);
 }
 @utility glass-strong {
-  background: color-mix(in oklab, var(--card) 88%, transparent);
-  backdrop-filter: blur(24px) saturate(180%);
+  background: var(--card);
   border: 1px solid var(--border);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 @utility gradient-text {
   background: var(--gradient-cool);

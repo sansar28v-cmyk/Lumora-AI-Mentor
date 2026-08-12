@@ -25,6 +25,9 @@ export type CertificationRec = {
   difficulty: string;
   duration: string;
   url: string;
+  skills?: string[];
+  matchScore?: number;
+  featured?: boolean;
 };
 
 export type ProjectRec = {
@@ -73,3 +76,31 @@ export type OnboardingProfile = {
   readiness_score: number | null;
   onboarding_completed: boolean;
 };
+
+export function getFormattedAnalysis(analysis?: Partial<Analysis> | null) {
+  const topicScores = analysis?.topicScores ?? [];
+  const rawWeak = analysis?.weakAreas ?? [];
+  const rawStrengths = analysis?.strengths ?? [];
+
+  if (topicScores.length > 0) {
+    const strengthsFromTopics = topicScores
+      .filter((t) => t.score >= 50)
+      .sort((a, b) => b.score - a.score)
+      .map((t) => `${t.topic} (${t.score}%)`);
+
+    const weakFromTopics = topicScores
+      .filter((t) => t.score < 50)
+      .sort((a, b) => a.score - b.score)
+      .map((t) => `${t.topic} (${t.score}%)`);
+
+    return {
+      strengths: strengthsFromTopics.length > 0 ? strengthsFromTopics : rawStrengths,
+      weakAreas: weakFromTopics.length > 0 ? weakFromTopics : rawWeak,
+    };
+  }
+
+  return {
+    strengths: rawStrengths,
+    weakAreas: rawWeak,
+  };
+}

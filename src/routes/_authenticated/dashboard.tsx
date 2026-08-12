@@ -21,7 +21,6 @@ import {
   Radar,
   RadarChart,
   ResponsiveContainer,
-  Tooltip,
 } from "recharts";
 import { AppLayout } from "@/components/AppLayout";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +28,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { getOnboarding } from "@/lib/onboarding.functions";
 import { domainById } from "@/lib/domains";
+import { getFormattedAnalysis } from "@/lib/onboarding-types";
+import { getRecommendedCertifications } from "@/lib/domain-certifications";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -66,6 +67,7 @@ function Dashboard() {
   const domain = domainById(profile?.career_domain);
   const readiness = profile?.readiness_score ?? result?.percentage ?? 0;
   const topics = result?.analysis?.topicScores ?? [];
+  const analysis = getFormattedAnalysis(result?.analysis);
   const firstName = (profile?.full_name ?? "there").split(" ")[0];
 
   return (
@@ -119,7 +121,6 @@ function Dashboard() {
                   <PolarGrid />
                   <PolarAngleAxis dataKey="topic" tick={{ fontSize: 11 }} />
                   <Radar dataKey="score" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.25} />
-                  <Tooltip />
                 </RadarChart>
               </ResponsiveContainer>
             ) : (
@@ -133,24 +134,27 @@ function Dashboard() {
             <Brain className="h-4 w-4 text-primary" /> Focus areas
           </h2>
           <ul className="space-y-3 text-sm">
-            {(result?.analysis?.weakAreas ?? []).map((w) => (
+            {analysis.weakAreas.map((w) => (
               <li key={w} className="flex gap-2.5">
                 <TrendingUp className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 {w}
               </li>
             ))}
-            {(result?.analysis?.weakAreas ?? []).length === 0 && (
+            {analysis.weakAreas.length === 0 && (
               <li className="text-muted-foreground">No weak areas detected yet.</li>
             )}
           </ul>
           <h3 className="mt-6 mb-3 font-semibold text-sm">Strengths</h3>
           <ul className="space-y-2 text-sm">
-            {(result?.analysis?.strengths ?? []).map((s) => (
+            {analysis.strengths.map((s) => (
               <li key={s} className="flex gap-2.5">
                 <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
                 {s}
               </li>
             ))}
+            {analysis.strengths.length === 0 && (
+              <li className="text-muted-foreground">No verified strengths yet.</li>
+            )}
           </ul>
         </div>
       </div>
@@ -191,18 +195,22 @@ function Dashboard() {
             </Button>
           </div>
           <div className="space-y-3">
-            {(result?.certifications ?? []).slice(0, 2).map((c) => (
-              <div key={c.name} className="rounded-2xl border bg-card p-4 flex items-start gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Award className="h-4 w-4" />
+            {((result?.certifications?.length ? result.certifications : getRecommendedCertifications(profile?.career_domain))).slice(0, 2).map((c) => (
+              <div key={c.name} className="rounded-2xl border bg-card p-4 flex items-start gap-3 hover:border-primary/30 transition-all">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                  <Award className="h-5 w-5" />
                 </span>
-                <div className="min-w-0">
-                  <div className="font-medium text-sm">{c.name}</div>
-                  <div className="text-xs text-muted-foreground">{c.provider} · {c.duration}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] uppercase font-semibold text-muted-foreground">{c.provider}</span>
+                    <Badge variant="outline" className="text-[10px] px-1 py-0">{c.difficulty ?? "Intermediate"}</Badge>
+                  </div>
+                  <div className="font-semibold text-sm leading-snug mt-0.5 truncate">{c.name}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{c.duration}</div>
                 </div>
-                <Button asChild size="sm" variant="outline" className="ml-auto shrink-0">
+                <Button asChild size="sm" variant="outline" className="shrink-0 rounded-xl">
                   <a href={c.url} target="_blank" rel="noopener noreferrer">
-                    Open <ExternalLink className="h-3.5 w-3.5" />
+                    Official Page <ExternalLink className="h-3.5 w-3.5 ml-1" />
                   </a>
                 </Button>
               </div>

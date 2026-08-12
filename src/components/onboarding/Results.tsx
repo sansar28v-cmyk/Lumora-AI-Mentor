@@ -22,7 +22,6 @@ import {
   Radar,
   RadarChart,
   ResponsiveContainer,
-  Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
@@ -32,6 +31,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import type { OnboardingResult } from "@/lib/onboarding-types";
+import { getFormattedAnalysis } from "@/lib/onboarding-types";
 
 export function Results({
   result,
@@ -44,6 +44,7 @@ export function Results({
 }) {
   const [tab, setTab] = useState("analysis");
   const topicScores = result.analysis?.topicScores ?? [];
+  const analysis = getFormattedAnalysis(result.analysis);
   const skipped = result.questions.filter(
     (q) => result.answers[String(q.id)] === null || result.answers[String(q.id)] === undefined,
   ).length;
@@ -86,14 +87,12 @@ export function Results({
                       <PolarGrid />
                       <PolarAngleAxis dataKey="topic" tick={{ fontSize: 10 }} />
                       <Radar dataKey="score" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.25} />
-                      <Tooltip />
                     </RadarChart>
                   ) : (
                     <BarChart data={topicScores}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="topic" tick={{ fontSize: 10 }} />
                       <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-                      <Tooltip />
                       <Bar dataKey="score" fill="var(--primary)" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   )}
@@ -125,8 +124,8 @@ export function Results({
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
-            <ListCard title="Strengths" tone="good" items={result.analysis?.strengths ?? []} />
-            <ListCard title="Weak areas" tone="bad" items={result.analysis?.weakAreas ?? []} />
+            <ListCard title="Strengths" tone="good" items={analysis.strengths} />
+            <ListCard title="Weak areas" tone="bad" items={analysis.weakAreas} />
           </div>
 
           <div className="rounded-2xl border bg-card p-6">

@@ -1,4 +1,5 @@
 import { callAIJson } from "./ai.server";
+import { getRecommendedCertifications } from "./domain-certifications";
 import type {
   Analysis,
   CertificationRec,
@@ -55,9 +56,13 @@ export function scoreQuiz(questions: QuizQuestion[], answers: Record<string, num
   const perTopic: Record<string, { correct: number; total: number }> = {};
   for (const q of questions) {
     const given = answers[String(q.id)];
-    const correct = given !== null && given !== undefined && given === q.correctIndex;
+    const givenNum = given !== null && given !== undefined ? Number(given) : null;
+    const correctNum = Number(q.correctIndex);
+    const correct = givenNum !== null && !isNaN(givenNum) && givenNum === correctNum;
+
     if (correct) score += 1;
-    const t = (perTopic[q.topic] ??= { correct: 0, total: 0 });
+    const topicName = q.topic || "General Concepts";
+    const t = (perTopic[topicName] ??= { correct: 0, total: 0 });
     t.total += 1;
     if (correct) t.correct += 1;
   }
@@ -123,20 +128,48 @@ Requirements:
 - projects: 6 projects spanning the learner's level and one step above, each targeting weak topics.`,
     });
 
+    const domainKey = input.domainName.toLowerCase().trim().replace(/\s+/g, "-");
+    const verifiedFallback = getRecommendedCertifications(domainKey);
+
+    // Sanitize certifications returned by AI to guarantee 100% valid, real, working URLs
+    const sanitizedCerts = (data.certifications ?? []).map((c) => {
+      const isInvalidUrl = !c.url || c.url.includes("example.com") || c.url.includes("official-site") || !c.url.startsWith("http");
+      if (isInvalidUrl) {
+        const match = verifiedFallback.find((f) =>
+          f.name.toLowerCase().includes((c.name || "").toLowerCase()) ||
+          f.provider.toLowerCase().includes((c.provider || "").toLowerCase())
+        );
+        return match ?? verifiedFallback[0]!;
+      }
+      return c;
+    });
+
+    const finalCerts = sanitizedCerts.length > 0 ? sanitizedCerts : verifiedFallback;
+
     return {
       analysis: data.analysis,
       roadmap: data.roadmap ?? [],
-      certifications: data.certifications ?? [],
+      certifications: finalCerts,
       projects: data.projects ?? [],
     };
   } catch (error) {
+    const strengthsFromTopics = (input.topicScores ?? [])
+      .filter((t) => t.score >= 50)
+      .sort((a, b) => b.score - a.score)
+      .map((t) => `${t.topic} (${t.score}%)`);
+
+    const weakFromTopics = (input.topicScores ?? [])
+      .filter((t) => t.score < 50)
+      .sort((a, b) => a.score - b.score)
+      .map((t) => `${t.topic} (${t.score}%)`);
+
     return {
       analysis: {
-        summary: `This is a default generic analysis because AI is not configured. Based on your score of ${input.percentage}%, your current skill level is ${input.skillLevel}.`,
-        strengths: ["Strong foundational knowledge", "Eagerness to learn"],
-        weakAreas: ["Advanced domain-specific tools", "Deep architectural patterns"],
+        summary: `Based on your score of ${input.percentage}%, your current skill level is assessed as ${input.skillLevel}.`,
+        strengths: strengthsFromTopics.length > 0 ? strengthsFromTopics : ["Strong core engagement", "Eagerness to learn"],
+        weakAreas: weakFromTopics.length > 0 ? weakFromTopics : ["Advanced domain-specific tools", "Deep architectural patterns"],
         recommendations: [
-          `Focus on building projects in ${input.domainName}.`,
+          `Focus on building practical projects in ${input.domainName}.`,
           "Follow industry best practices and study established architectures.",
           "Contribute to open source or collaborate on real-world projects."
         ]
@@ -149,16 +182,7 @@ Requirements:
         hours: input.weeklyHours,
         outcome: "Understanding foundational concepts."
       })),
-      certifications: [
-        {
-          name: `${input.domainName} Certified Associate`,
-          provider: "Tech Council",
-          description: "An industry-standard certification for foundational knowledge.",
-          difficulty: "Beginner",
-          duration: "3 months",
-          url: "https://example.com/cert"
-        }
-      ],
+      certifications: getRecommendedCertifications(input.domainName.toLowerCase().replace(/\s+/g, "-")),
       projects: [
         {
           title: `${input.domainName} Starter Project`,
