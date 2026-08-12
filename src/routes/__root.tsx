@@ -42,6 +42,19 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    const isChunkError =
+      error?.message?.includes("Failed to fetch dynamically imported module") ||
+      error?.message?.includes("Loading chunk") ||
+      error?.name === "ChunkLoadError" ||
+      error?.message?.includes("Importing a module script failed") ||
+      error?.message?.includes("404");
+    if (isChunkError && typeof window !== "undefined") {
+      const reloaded = sessionStorage.getItem("lumora_chunk_reload");
+      if (!reloaded) {
+        sessionStorage.setItem("lumora_chunk_reload", "true");
+        window.location.reload();
+      }
+    }
   }, [error]);
 
   return (
@@ -51,17 +64,16 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           This page didn't load
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+          A new deployment was published or a temporary network glitch occurred. Try refreshing or going home.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
-              router.invalidate();
-              reset();
+              window.location.reload();
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
+            Refresh page
           </button>
           <a
             href="/"
@@ -120,13 +132,36 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("lumora_chunk_reload");
+    }
+
+    const handleScriptError = (e: ErrorEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && target.tagName === "SCRIPT") {
+        const src = (target as HTMLScriptElement).src || "";
+        if (src.includes(".js")) {
+          console.warn("Script chunk 404 failed to load, refreshing page to fetch latest deployment bundle:", src);
+          const reloaded = sessionStorage.getItem("lumora_chunk_reload");
+          if (!reloaded) {
+            sessionStorage.setItem("lumora_chunk_reload", "true");
+            window.location.reload();
+          }
+        }
+      }
+    };
+    window.addEventListener("error", handleScriptError, true);
+
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       if (event === "SIGNED_OUT") queryClient.clear();
       else queryClient.invalidateQueries();
       router.invalidate();
     });
-    return () => sub.subscription.unsubscribe();
+    return () => {
+      window.removeEventListener("error", handleScriptError, true);
+      sub.subscription.unsubscribe();
+    };
   }, [router, queryClient]);
 
   return (
