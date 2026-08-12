@@ -162,7 +162,7 @@ export function Certifications() {
             variant={onlySaved ? "default" : "outline"}
             size="sm"
             onClick={() => setOnlySaved((prev) => !prev)}
-            className="rounded-xl shrink-0"
+            className="rounded-xl shrink-0 w-full sm:w-auto justify-center"
           >
             <Bookmark className="h-4 w-4 mr-1.5" />
             Saved ({savedCerts.length})
@@ -299,8 +299,8 @@ export function Certifications() {
                 </div>
 
                 {/* Action buttons */}
-                <div className="mt-4 flex items-center gap-2">
-                  <Button asChild variant="default" size="sm" className="flex-1 rounded-xl">
+                <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <Button asChild variant="default" size="sm" className="flex-1 rounded-xl justify-center">
                     <a href={c.url} target="_blank" rel="noopener noreferrer">
                       Official Page <ExternalLink className="h-3.5 w-3.5 ml-1.5" />
                     </a>
@@ -309,7 +309,7 @@ export function Certifications() {
                     variant={isSaved ? "secondary" : "outline"}
                     size="sm"
                     onClick={() => toggleSave(c.name)}
-                    className="rounded-xl px-3"
+                    className="rounded-xl px-3 justify-center"
                   >
                     {isSaved ? "Saved" : "Save"}
                   </Button>

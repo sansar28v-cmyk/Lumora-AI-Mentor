@@ -46,24 +46,24 @@ function Roadmap() {
           description="Finish the AI onboarding assessment and Lumora will generate a full 12-week plan for your domain."
         />
       ) : (
-        <div className="relative pl-6 md:pl-8">
-          <div className="absolute left-[7px] md:left-[11px] top-2 bottom-2 w-px bg-border" />
+        <div className="relative pl-5 sm:pl-6 md:pl-8 max-w-full overflow-hidden">
+          <div className="absolute left-[5px] sm:left-[7px] md:left-[11px] top-2 bottom-2 w-px bg-border" />
           <div className="space-y-4">
             {weeks.map((w) => (
               <div key={w.week} className="relative">
-                <span className="absolute -left-6 md:-left-8 top-6 h-3.5 w-3.5 rounded-full border-2 border-primary bg-background" />
-                <div className="rounded-2xl border bg-card p-5 md:p-6">
+                <span className="absolute -left-5 sm:-left-6 md:-left-8 top-5 h-3.5 w-3.5 rounded-full border-2 border-primary bg-background" />
+                <div className="rounded-2xl border bg-card p-4 sm:p-5 md:p-6 min-w-0">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <Badge variant="secondary">Week {w.week}</Badge>
                     <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Clock className="h-3.5 w-3.5" /> {w.hours} hrs
                     </span>
                   </div>
-                  <h3 className="mt-3 text-lg font-semibold leading-snug">{w.title}</h3>
+                  <h3 className="mt-3 text-base sm:text-lg font-semibold leading-snug">{w.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">{w.focus}</p>
                   <div className="mt-4 flex flex-wrap gap-1.5">
                     {(w.topics ?? []).map((t) => (
-                      <span key={t} className="rounded-lg border bg-muted/40 px-2.5 py-1 text-xs">{t}</span>
+                      <span key={t} className="rounded-lg border bg-muted/40 px-2.5 py-1 text-xs max-w-full truncate">{t}</span>
                     ))}
                   </div>
                   {w.outcome && (

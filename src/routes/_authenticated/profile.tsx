@@ -67,30 +67,30 @@ function Profile() {
     <AppLayout title="Profile">
       <PageIntro title="Your profile" description="Everything here comes from your account and your AI assessment." />
 
-      <div className="mb-8 rounded-2xl border bg-card p-6 md:p-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center">
-          <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-3xl bg-primary/10 text-2xl font-semibold text-primary">
+      <div className="mb-8 rounded-2xl border bg-card p-5 sm:p-6 md:p-8 max-w-full overflow-hidden">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center min-w-0">
+          <span className="flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center rounded-3xl bg-primary/10 text-xl sm:text-2xl font-semibold text-primary">
             {initials}
           </span>
-          <div className="flex-1">
-            <h2 className="text-2xl font-semibold tracking-tight">{profile?.full_name ?? "Your name"}</h2>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl sm:text-2xl font-semibold tracking-tight truncate">{profile?.full_name ?? "Your name"}</h2>
             <div className="mt-2 flex flex-wrap gap-2">
               {domain && <Badge variant="secondary">{domain.name}</Badge>}
               {profile?.skill_level && <Badge variant="outline">{profile.skill_level}</Badge>}
               {profile?.experience_level && <Badge variant="outline" className="capitalize">{profile.experience_level}</Badge>}
             </div>
           </div>
-          <div className="shrink-0 rounded-2xl border bg-muted/30 p-5 text-center">
+          <div className="shrink-0 rounded-2xl border bg-muted/30 p-4 sm:p-5 text-center w-full md:w-auto">
             <div className="text-xs uppercase tracking-wide text-muted-foreground">Industry readiness</div>
-            <div className="mt-1 text-4xl font-semibold tracking-tight">{readiness}%</div>
-            <Progress value={readiness} className="mt-3 h-2 w-40" />
+            <div className="mt-1 text-3xl sm:text-4xl font-semibold tracking-tight">{readiness}%</div>
+            <Progress value={readiness} className="mt-3 h-2 w-full max-w-[10rem] mx-auto" />
           </div>
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-2xl border bg-card p-6">
+      <div className="grid gap-6 lg:grid-cols-3 max-w-full">
+        <div className="lg:col-span-2 space-y-6 min-w-0">
+          <div className="rounded-2xl border bg-card p-4 sm:p-6">
             <h3 className="font-semibold">Edit details</h3>
             <div className="mt-4 space-y-4">
               <div>
@@ -107,11 +107,11 @@ function Profile() {
             </div>
           </div>
 
-          <div className="rounded-2xl border bg-card p-6">
+          <div className="rounded-2xl border bg-card p-4 sm:p-6">
             <h3 className="font-semibold">Assessed strengths</h3>
             <div className="mt-4 flex flex-wrap gap-2">
               {analysis.strengths.map((s) => (
-                <span key={s} className="rounded-lg border bg-muted/40 px-3 py-1.5 text-sm">{s}</span>
+                <span key={s} className="rounded-lg border bg-muted/40 px-3 py-1.5 text-sm max-w-full truncate">{s}</span>
               ))}
               {analysis.strengths.length === 0 && (
                 <p className="text-sm text-muted-foreground">Complete your assessment to see verified strengths.</p>
@@ -120,7 +120,7 @@ function Profile() {
             <h3 className="mt-6 font-semibold">Focus areas</h3>
             <div className="mt-4 flex flex-wrap gap-2">
               {analysis.weakAreas.map((s) => (
-                <span key={s} className="rounded-lg border bg-muted/40 px-3 py-1.5 text-sm">{s}</span>
+                <span key={s} className="rounded-lg border bg-muted/40 px-3 py-1.5 text-sm max-w-full truncate">{s}</span>
               ))}
               {analysis.weakAreas.length === 0 && (
                 <p className="text-sm text-muted-foreground">No focus areas identified yet.</p>
@@ -129,8 +129,8 @@ function Profile() {
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="rounded-2xl border bg-card p-6">
+        <div className="space-y-6 min-w-0">
+          <div className="rounded-2xl border bg-card p-4 sm:p-6">
             <h3 className="mb-4 font-semibold">Career setup</h3>
             <dl className="space-y-3 text-sm">
               <Row icon={<Target className="h-4 w-4" />} label="Goal" value={goal} />

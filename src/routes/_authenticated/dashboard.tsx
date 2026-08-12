@@ -72,8 +72,8 @@ function Dashboard() {
 
   return (
     <AppLayout>
-      <section className="rounded-2xl border bg-card p-8 md:p-10 mb-8">
-        <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+      <section className="rounded-2xl border bg-card p-5 sm:p-8 md:p-10 mb-8 max-w-full overflow-hidden">
+        <div className="flex flex-col gap-6 sm:gap-8 md:flex-row md:items-center md:justify-between min-w-0">
           <div className="max-w-xl">
             <span className="inline-flex items-center gap-2 rounded-full border bg-muted/50 px-3 py-1 text-xs font-medium text-muted-foreground">
               <Sparkles className="h-3.5 w-3.5 text-primary" /> {domain?.name ?? "Your career track"}
@@ -94,10 +94,10 @@ function Dashboard() {
               </Button>
             </div>
           </div>
-          <div className="shrink-0 rounded-2xl border bg-muted/30 p-6 text-center">
+          <div className="shrink-0 rounded-2xl border bg-muted/30 p-5 sm:p-6 text-center w-full md:w-auto">
             <div className="text-xs uppercase tracking-wide text-muted-foreground">Industry readiness</div>
-            <div className="mt-2 text-5xl font-semibold tracking-tight">{readiness}%</div>
-            <Progress value={readiness} className="mt-4 h-2 w-48" />
+            <div className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight">{readiness}%</div>
+            <Progress value={readiness} className="mt-4 h-2 w-full max-w-[12rem] mx-auto" />
             <div className="mt-3 text-xs text-muted-foreground">Skill level: {profile?.skill_level ?? "—"}</div>
           </div>
         </div>
@@ -110,8 +110,8 @@ function Dashboard() {
         <Stat label="Weekly Hours" value={profile?.weekly_hours ? `${profile.weekly_hours} hrs` : "—"} icon={<Clock className="h-4 w-4" />} />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3 mb-8">
-        <div className="lg:col-span-2 rounded-2xl border bg-card p-6">
+      <div className="grid gap-6 lg:grid-cols-3 mb-8 max-w-full">
+        <div className="lg:col-span-2 rounded-2xl border bg-card p-4 sm:p-6 min-w-0">
           <h2 className="font-semibold mb-1">Skill gap analysis</h2>
           <p className="text-sm text-muted-foreground mb-4">Generated from your {domain?.name ?? "domain"} assessment.</p>
           <div className="h-72">
@@ -129,7 +129,7 @@ function Dashboard() {
           </div>
         </div>
 
-        <div className="rounded-2xl border bg-card p-6">
+        <div className="rounded-2xl border bg-card p-4 sm:p-6 min-w-0">
           <h2 className="font-semibold mb-4 flex items-center gap-2">
             <Brain className="h-4 w-4 text-primary" /> Focus areas
           </h2>
@@ -196,11 +196,11 @@ function Dashboard() {
           </div>
           <div className="space-y-3">
             {((result?.certifications?.length ? result.certifications : getRecommendedCertifications(profile?.career_domain))).slice(0, 2).map((c) => (
-              <div key={c.name} className="rounded-2xl border bg-card p-4 flex items-start gap-3 hover:border-primary/30 transition-all">
+              <div key={c.name} className="rounded-2xl border bg-card p-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 hover:border-primary/30 transition-all">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <Award className="h-5 w-5" />
                 </span>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 w-full">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] uppercase font-semibold text-muted-foreground">{c.provider}</span>
                     <Badge variant="outline" className="text-[10px] px-1 py-0">{c.difficulty ?? "Intermediate"}</Badge>
@@ -208,7 +208,7 @@ function Dashboard() {
                   <div className="font-semibold text-sm leading-snug mt-0.5 truncate">{c.name}</div>
                   <div className="text-xs text-muted-foreground mt-0.5">{c.duration}</div>
                 </div>
-                <Button asChild size="sm" variant="outline" className="shrink-0 rounded-xl">
+                <Button asChild size="sm" variant="outline" className="shrink-0 rounded-xl w-full sm:w-auto justify-center">
                   <a href={c.url} target="_blank" rel="noopener noreferrer">
                     Official Page <ExternalLink className="h-3.5 w-3.5 ml-1" />
                   </a>

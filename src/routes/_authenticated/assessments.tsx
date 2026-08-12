@@ -57,20 +57,20 @@ function Assessments() {
         description={`You scored ${result.score} of ${result.total} — measured level ${result.skill_level}.`}
       />
 
-      <div className="mb-8 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border bg-card p-6">
+      <div className="mb-8 grid gap-4 sm:grid-cols-3 max-w-full">
+        <div className="rounded-2xl border bg-card p-4 sm:p-6">
           <div className="text-xs uppercase tracking-wide text-muted-foreground">Score</div>
-          <div className="mt-2 text-4xl font-semibold tracking-tight">{result.percentage}%</div>
+          <div className="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">{result.percentage}%</div>
           <Progress value={result.percentage} className="mt-4 h-2" />
         </div>
-        <div className="rounded-2xl border bg-card p-6">
+        <div className="rounded-2xl border bg-card p-4 sm:p-6">
           <div className="text-xs uppercase tracking-wide text-muted-foreground">Correct answers</div>
-          <div className="mt-2 text-4xl font-semibold tracking-tight">{result.score}/{result.total}</div>
+          <div className="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">{result.score}/{result.total}</div>
           <div className="mt-4 text-xs text-muted-foreground">Across {topics.length} topics</div>
         </div>
-        <div className="rounded-2xl border bg-card p-6">
+        <div className="rounded-2xl border bg-card p-4 sm:p-6">
           <div className="text-xs uppercase tracking-wide text-muted-foreground">Skill level</div>
-          <div className="mt-2 text-4xl font-semibold tracking-tight">{result.skill_level}</div>
+          <div className="mt-2 text-3xl sm:text-4xl font-semibold tracking-tight">{result.skill_level}</div>
           <div className="mt-4 text-xs text-muted-foreground">Self-declared: {result.experience_level ?? "—"}</div>
         </div>
       </div>
@@ -83,13 +83,13 @@ function Assessments() {
           {/* Mobile: horizontal bars so topic names stay readable */}
           <div className="md:hidden" style={{ height: Math.max(220, topics.length * 34) }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={topics} layout="vertical" margin={{ left: 4, right: 16, top: 4, bottom: 4 }}>
+              <BarChart data={topics} layout="vertical" margin={{ left: 0, right: 12, top: 4, bottom: 4 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                 <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 10 }} />
                 <YAxis
                   type="category"
                   dataKey="topic"
-                  width={116}
+                  width={100}
                   interval={0}
                   tick={{ fontSize: 10 }}
                 />
@@ -113,8 +113,8 @@ function Assessments() {
       )}
 
 
-      <div className="mb-8 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border bg-card p-6">
+      <div className="mb-8 grid gap-6 lg:grid-cols-2 max-w-full">
+        <div className="rounded-2xl border bg-card p-4 sm:p-6 min-w-0">
           <h2 className="mb-4 flex items-center gap-2 font-semibold">
             <TrendingUp className="h-4 w-4 text-primary" /> Strengths
           </h2>
@@ -129,7 +129,7 @@ function Assessments() {
             )}
           </ul>
         </div>
-        <div className="rounded-2xl border bg-card p-6">
+        <div className="rounded-2xl border bg-card p-4 sm:p-6 min-w-0">
           <h2 className="mb-4 flex items-center gap-2 font-semibold">
             <AlertTriangle className="h-4 w-4 text-primary" /> Weak topics & next actions
           </h2>
